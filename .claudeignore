@@ -1,0 +1,7 @@
+# Keep Claude Code away from local secrets and ephemeral state
+local/
+.venv/
+__pycache__/
+*.pyc
+dist/
+build/

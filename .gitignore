@@ -1,0 +1,27 @@
+# Local development — never commit
+local/
+.claude/memory/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+.env
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# uv
+.uv/
+
+# macOS
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+.mcp.json
