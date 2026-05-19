@@ -1,11 +1,14 @@
 """MCP server entry point. Registers all tools and starts the stdio loop."""
 
+import asyncio
+import sys
+
 from mcp.server import Server
 from mcp.server.stdio import stdio_server
 from mcp.types import TextContent, Tool
 import mcp.types as types
 
-from gmail_mcp.auth import build_service
+from gmail_mcp.auth import build_service, get_credentials
 from gmail_mcp.tools import drafts, labels, messages
 
 app = Server("gmail-mcp")
@@ -181,10 +184,18 @@ async def call_tool(name: str, arguments: dict) -> list[TextContent]:
 
 
 def main() -> None:
-    import asyncio
     asyncio.run(_run())
 
 
 async def _run() -> None:
+    # Authenticate before entering the stdio loop so the browser popup happens
+    # at server startup rather than mid-tool-call. Blocks until the user
+    # completes the OAuth flow in the browser (first run only).
+    try:
+        await asyncio.to_thread(get_credentials)
+    except Exception as e:
+        print(f"gmail-mcp: authentication failed: {e}", file=sys.stderr)
+        sys.exit(1)
+
     async with stdio_server() as (read_stream, write_stream):
         await app.run(read_stream, write_stream, app.create_initialization_options())
