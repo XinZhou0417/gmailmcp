@@ -16,6 +16,13 @@ A simple, local [MCP](https://modelcontextprotocol.io) server that exposes Gmail
 | `apply_label` | Apply a label to a message |
 | `remove_label` | Remove a label from a message |
 
+## Prerequisites
+
+- **[uv](https://docs.astral.sh/uv/getting-started/installation/)** — Python package manager used to install dependencies and run the server
+- **Python 3.11+** — managed automatically by `uv` if not already installed
+- **A Google account** with Gmail
+- **A Google Cloud project** with the Gmail API enabled (covered in Setup below)
+
 ## Setup
 
 ### 1. Get Google OAuth credentials
@@ -58,7 +65,8 @@ The server config block looks like this regardless of where you put it:
 }
 ```
 
-The key `"gmail"` is a custom display name — you can call it anything you like. It only affects how the server appears in your client's MCP list and has no effect on how the server runs.
+- `"gmail"` is a custom display name — you can call it anything. It only affects how the server appears in your client's MCP list.
+- `"cwd"` is the absolute path to the directory where you cloned this repo (e.g. `/Users/yourname/projects/gmailmcp`). The client runs `uv run gmail-mcp` from that directory so `uv` can find the project's dependencies.
 
 If your credentials are **not** in `~/.config/gmail-mcp/`, add an `env` key:
 
@@ -68,7 +76,7 @@ If your credentials are **not** in `~/.config/gmail-mcp/`, add an `env` key:
   "args": ["run", "gmail-mcp"],
   "cwd": "/path/to/gmailmcp",
   "env": {
-    "GMAIL_MCP_SECRET_DIR": "/path/to/your/credentials"
+    "GMAIL_MCP_SECRET_DIR": "/path/to/your/credentials.json"
   }
 }
 ```
