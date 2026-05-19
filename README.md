@@ -45,25 +45,7 @@ mv ~/PATH/TO/client_secret_*.json ~/.config/gmail-mcp/
 
 To use a custom path, set the `GMAIL_MCP_SECRET_DIR` environment variable to the **directory** containing the file (not the file path itself).
 
-### 3. Complete the OAuth flow
-
-Run this once — it opens a browser to authorise access and saves a `token.json` in your credentials directory.
-You must run it from inside the cloned repo directory so `uv` can find the project environment:
-
-> **What is `token.json`?** It stores your OAuth access token and refresh token. The access token expires after ~1 hour, but the server refreshes it automatically on each startup — you won't need to re-run this command under normal use. Only re-run it if you revoke access or delete the file.
-
-```bash
-cd /path/to/gmailmcp
-uv run python -c "from gmail_mcp.auth import get_credentials; get_credentials(); print('Auth OK')"
-```
-
-If you set `GMAIL_MCP_SECRET_DIR` in your MCP client config, export it here too so the token is saved to the right place:
-
-```bash
-GMAIL_MCP_SECRET_DIR=/path/to/your/credentials/dir uv run python -c "from gmail_mcp.auth import get_credentials; get_credentials(); print('Auth OK')"
-```
-
-### 4. Register the server with your MCP client
+### 3. Register the server with your MCP client
 
 The server config block looks like this regardless of where you put it:
 
@@ -83,13 +65,14 @@ If your credentials are **not** in `~/.config/gmail-mcp/`, add an `env` key:
 ```json
 "gmail": {
   "command": "uv",
-  "args": ["run", "gmail-mcp"],
-  "cwd": "/path/to/gmailmcp",
+  "args": ["run", "--project", "/path/to/gmailmcp", "gmail-mcp"],
   "env": {
     "GMAIL_MCP_SECRET_DIR": "/path/to/your/credentials/dir"
   }
 }
 ```
+
+> **First-time OAuth:** On the very first connection, the server will open a browser window asking you to authorise Gmail access. Complete the flow once — a `token.json` is saved next to your credentials and all future startups are silent. You do not need to run any command manually.
 
 Where you place this block depends on your client:
 
