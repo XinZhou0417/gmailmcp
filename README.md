@@ -1,6 +1,6 @@
 # Python-based Gmail MCP Server
 
-A simple, local [MCP](https://modelcontextprotocol.io) server that exposes Gmail to Claude Code and other MCP clients over stdio transport. Built with [`modelcontextprotocol/python-sdk`](https://github.com/modelcontextprotocol/python-sdk) and the official Google API client.
+A simple, local [MCP](https://modelcontextprotocol.io) server that exposes Gmail to Claude Code and other MCP clients over stdio transport. Set up with minimum configs. Built with [`modelcontextprotocol/python-sdk`](https://github.com/modelcontextprotocol/python-sdk) and the official Google API client.
 
 ## Tools
 
