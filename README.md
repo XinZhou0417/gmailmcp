@@ -72,6 +72,17 @@ If your credentials are **not** in `~/.config/gmail-mcp/`, add an `env` key:
 }
 ```
 
+Where you place this block depends on your client:
+
+| Client | Where to add it |
+|---|---|
+| **Claude Code** — project-level | `.mcp.json` in the project root (wrap in `{"mcpServers": {...}}`) |
+| **Claude Code** — user-level (all projects) | `~/.claude.json` under the `"mcpServers"` key |
+| **VS Code** | `.vscode/mcp.json` or your workspace/user `settings.json` under `"mcp.servers"` |
+| **Other MCP clients** | Wherever that client reads its server list |
+
+Refer to your client's documentation for the exact file format and location.
+
 ### First-time setup: browser authorisation
 
 When the MCP server connects for the first time, **a browser window will open automatically** — this is expected and safe. It is the standard Google OAuth flow, not a phishing page. You are granting this locally-running server access to your own Gmail account.
@@ -85,17 +96,6 @@ You will be shown three permission scopes — grant all three for the server to 
 | **Modify** | `apply_label`, `remove_label` |
 
 After you click Allow, a `token.json` is saved next to your credentials. All future startups connect silently — the browser will not open again.
-
-Where you place this block depends on your client:
-
-| Client | Where to add it |
-|---|---|
-| **Claude Code** — project-level | `.mcp.json` in the project root (wrap in `{"mcpServers": {...}}`) |
-| **Claude Code** — user-level (all projects) | `~/.claude.json` under the `"mcpServers"` key |
-| **VS Code** | `.vscode/mcp.json` or your workspace/user `settings.json` under `"mcp.servers"` |
-| **Other MCP clients** | Wherever that client reads its server list |
-
-Refer to your client's documentation for the exact file format and location.
 
 ## Development
 
