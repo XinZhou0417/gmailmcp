@@ -72,7 +72,12 @@ If your credentials are **not** in `~/.config/gmail-mcp/`, add an `env` key:
 }
 ```
 
-> **First-time OAuth:** On the very first connection, the server will open a browser window asking you to authorise Gmail access. Complete the flow once — a `token.json` is saved next to your credentials and all future startups are silent. You do not need to run any command manually.
+> **First-time OAuth:** On the very first connection, the server will open a browser window asking you to authorise Gmail access. You will be shown three permission scopes — grant all three for the server to work fully:
+> - **Read** — required by `list_messages` and `read_message`
+> - **Compose** — required by `create_draft`, `list_drafts`, `send_draft`, `delete_draft`
+> - **Modify** — required by `apply_label` and `remove_label`
+>
+> A `token.json` is saved next to your credentials after you approve. All future startups are silent — no browser, no manual step.
 
 Where you place this block depends on your client:
 
