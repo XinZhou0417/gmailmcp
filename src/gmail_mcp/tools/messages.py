@@ -2,7 +2,6 @@
 
 import base64
 import re
-from email import message_from_bytes
 from typing import Any
 
 
@@ -11,6 +10,18 @@ def _header(msg: dict, name: str) -> str:
         if h["name"].lower() == name.lower():
             return h["value"]
     return ""
+
+
+_BODY_CHAR_LIMIT = 8000
+# Matches "On <date>, <name> wrote:" reply separators (single or multi-line)
+_QUOTE_HEADER_RE = re.compile(r"\nOn .{10,200}wrote:\s*\n", re.DOTALL)
+
+
+def _strip_quoted_reply(text: str) -> str:
+    """Remove inline quoted history: '> ' lines and 'On ... wrote:' separators."""
+    text = _QUOTE_HEADER_RE.split(text)[0]
+    lines = [l for l in text.splitlines() if not l.startswith(">")]
+    return "\n".join(lines).strip()
 
 
 def _decode_body(payload: dict) -> str:
@@ -98,7 +109,10 @@ async def read_message(service: Any, message_id: str) -> str:
     from_ = _header(msg, "From")
     to = _header(msg, "To")
     date = _header(msg, "Date")
-    body = _decode_body(msg.get("payload", {}))
+    body = _strip_quoted_reply(_decode_body(msg.get("payload", {})))
+    truncated = len(body) > _BODY_CHAR_LIMIT
+    if truncated:
+        body = body[:_BODY_CHAR_LIMIT] + f"\n\n[truncated — {len(body)} chars total]"
 
     return (
         f"**Subject:** {subject}  \n"
