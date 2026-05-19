@@ -43,14 +43,24 @@ mkdir -p ~/.config/gmail-mcp
 mv ~/PATH/TO/client_secret_*.json ~/.config/gmail-mcp/
 ```
 
-To use a custom path, set the `GMAIL_MCP_SECRET_DIR` environment variable instead.
+To use a custom path, set the `GMAIL_MCP_SECRET_DIR` environment variable to the **directory** containing the file (not the file path itself).
 
 ### 3. Complete the OAuth flow
 
-Run this once — it opens a browser to authorise access and saves a `token.json` next to your credentials:
+Run this once — it opens a browser to authorise access and saves a `token.json` in your credentials directory.
+You must run it from inside the cloned repo directory so `uv` can find the project environment:
+
+> **What is `token.json`?** It stores your OAuth access token and refresh token. The access token expires after ~1 hour, but the server refreshes it automatically on each startup — you won't need to re-run this command under normal use. Only re-run it if you revoke access or delete the file.
 
 ```bash
+cd /path/to/gmailmcp
 uv run python -c "from gmail_mcp.auth import get_credentials; get_credentials(); print('Auth OK')"
+```
+
+If you set `GMAIL_MCP_SECRET_DIR` in your MCP client config, export it here too so the token is saved to the right place:
+
+```bash
+GMAIL_MCP_SECRET_DIR=/path/to/your/credentials/dir uv run python -c "from gmail_mcp.auth import get_credentials; get_credentials(); print('Auth OK')"
 ```
 
 ### 4. Register the server with your MCP client
@@ -60,13 +70,13 @@ The server config block looks like this regardless of where you put it:
 ```json
 "gmail": {
   "command": "uv",
-  "args": ["run", "gmail-mcp"],
-  "cwd": "/path/to/gmailmcp"
+  "args": ["run", "--project", "/path/to/gmailmcp", "gmail-mcp"]
 }
 ```
 
 - `"gmail"` is a custom display name — you can call it anything. It only affects how the server appears in your client's MCP list.
-- `"cwd"` is the absolute path to the directory where you cloned this repo (e.g. `/Users/yourname/projects/gmailmcp`). The client runs `uv run gmail-mcp` from that directory so `uv` can find the project's dependencies.
+- `--project /path/to/gmailmcp` tells `uv` which project to use, so the server works correctly regardless of which directory the MCP client launches it from.
+- If `uv` is not found, use its full path as the `"command"` value. Run `which uv` to find it (e.g. `/Users/yourname/.local/bin/uv`).
 
 If your credentials are **not** in `~/.config/gmail-mcp/`, add an `env` key:
 
@@ -76,7 +86,7 @@ If your credentials are **not** in `~/.config/gmail-mcp/`, add an `env` key:
   "args": ["run", "gmail-mcp"],
   "cwd": "/path/to/gmailmcp",
   "env": {
-    "GMAIL_MCP_SECRET_DIR": "/path/to/your/credentials.json"
+    "GMAIL_MCP_SECRET_DIR": "/path/to/your/credentials/dir"
   }
 }
 ```
@@ -86,7 +96,7 @@ Where you place this block depends on your client:
 | Client | Where to add it |
 |---|---|
 | **Claude Code** — project-level | `.mcp.json` in the project root (wrap in `{"mcpServers": {...}}`) |
-| **Claude Code** — user-level (all projects) | `~/.claude/settings.json` under `"mcpServers"` |
+| **Claude Code** — user-level (all projects) | `~/.claude.json` under the `"mcpServers"` key |
 | **VS Code** | `.vscode/mcp.json` or your workspace/user `settings.json` under `"mcp.servers"` |
 | **Other MCP clients** | Wherever that client reads its server list |
 
