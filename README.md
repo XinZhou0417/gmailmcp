@@ -72,12 +72,19 @@ If your credentials are **not** in `~/.config/gmail-mcp/`, add an `env` key:
 }
 ```
 
-> **First-time OAuth:** On the very first connection, the server will open a browser window asking you to authorise Gmail access. You will be shown three permission scopes — grant all three for the server to work fully:
-> - **Read** — required by `list_messages` and `read_message`
-> - **Compose** — required by `create_draft`, `list_drafts`, `send_draft`, `delete_draft`
-> - **Modify** — required by `apply_label` and `remove_label`
->
-> A `token.json` is saved next to your credentials after you approve. All future startups are silent — no browser, no manual step.
+### First-time setup: browser authorisation
+
+When the MCP server connects for the first time, **a browser window will open automatically** — this is expected and safe. It is the standard Google OAuth flow, not a phishing page. You are granting this locally-running server access to your own Gmail account.
+
+You will be shown three permission scopes — grant all three for the server to work fully:
+
+| Scope | Required by |
+|---|---|
+| **Read** | `list_messages`, `read_message` |
+| **Compose** | `create_draft`, `list_drafts`, `send_draft`, `delete_draft` |
+| **Modify** | `apply_label`, `remove_label` |
+
+After you click Allow, a `token.json` is saved next to your credentials. All future startups connect silently — the browser will not open again.
 
 Where you place this block depends on your client:
 
